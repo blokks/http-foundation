@@ -41,7 +41,7 @@ class ResponseHeaderBag extends HeaderBag
      * {@inheritdoc}
      */
     public function __toString()
-    {
+    {        
         $cookies = '';
         foreach ($this->getCookies() as $cookie) {
             $cookies .= 'Set-Cookie: '.$cookie."\r\n";
@@ -195,9 +195,9 @@ class ResponseHeaderBag extends HeaderBag
      * @param bool   $secure
      * @param bool   $httpOnly
      */
-    public function clearCookie($name, $path = '/', $domain = null, $secure = false, $httpOnly = true)
+    public function clearCookie($name, $path = '/', $domain = null, $sameSite = null, $secure = false, $httpOnly = true)
     {
-        $this->setCookie(new Cookie($name, null, 1, $path, $domain, $secure, $httpOnly));
+        $this->setCookie(new Cookie($name, null, 1, $path, $domain, $sameSite, $secure, $httpOnly));
     }
 
     /**

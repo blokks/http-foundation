@@ -343,7 +343,20 @@ class Response
 
         // cookies
         foreach ($this->headers->getCookies() as $cookie) {
-            setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), $cookie->getPath(), $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
+            if (PHP_VERSION_ID < 70300) { 
+                header("Set-Cookie: {$cookie->__toString()}", false);
+                // setcookie($cookie->getName(), $cookie->getValue(), $cookie->getExpiresTime(), "{$cookie->getPath()}; {$cookie->getSameSite()}", $cookie->getDomain(), $cookie->isSecure(), $cookie->isHttpOnly());
+            }
+            else {
+                setcookie($cookie->getName(), $cookie->getValue(), [
+                    'expires' => $cookie->getExpiresTime(),
+                    'path' => $cookie->getPath(),
+                    'domain' => $cookie->getDomain(),
+                    'secure' => $cookie->isSecure(),
+                    'httponly' => $cookie->isHttpOnly(),
+                    'samesite' => $cookie->getSameSite(),
+                ]);
+            }            
         }
 
         return $this;

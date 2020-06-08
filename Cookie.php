@@ -25,6 +25,7 @@ class Cookie
     protected $path;
     protected $secure;
     protected $httpOnly;
+    protected $sameSite;
 
     /**
      * @param string                                  $name     The name of the cookie
@@ -37,7 +38,7 @@ class Cookie
      *
      * @throws \InvalidArgumentException
      */
-    public function __construct($name, $value = null, $expire = 0, $path = '/', $domain = null, $secure = false, $httpOnly = true)
+    public function __construct($name, $value = null, $expire = 0, $path = '/', $domain = null, $sameSite = null, $secure = false, $httpOnly = true)
     {
         // from PHP source code
         if (preg_match("/[=,; \t\r\n\013\014]/", $name)) {
@@ -64,8 +65,10 @@ class Cookie
         $this->domain = $domain;
         $this->expire = 0 < $expire ? (int) $expire : 0;
         $this->path = empty($path) ? '/' : $path;
+        $this->sameSite = $sameSite;
         $this->secure = (bool) $secure;
         $this->httpOnly = (bool) $httpOnly;
+
     }
 
     /**
@@ -93,6 +96,10 @@ class Cookie
 
         if ($this->getDomain()) {
             $str .= '; domain='.$this->getDomain();
+        }
+
+        if ($this->getSameSite()) {
+            $str .= '; samesite='.$this->getSameSite();
         }
 
         if (true === $this->isSecure()) {
@@ -154,6 +161,11 @@ class Cookie
     public function getPath()
     {
         return $this->path;
+    }
+
+    public function getSameSite() 
+    {
+        return $this->sameSite;
     }
 
     /**
